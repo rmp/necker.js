@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>scout-scarf demo</title>
+	<style>
+	 :root { --bg:#f6f5f2; --card:#fff; --ink:#1d1d1b; --muted:#6b6b66; --line:#e1dfd8; }
+	 @media (prefers-color-scheme: dark) {
+	     :root { --bg:#161614; --card:#222220; --ink:#f0eee8; --muted:#9c9a92; --line:#38362f; }
+	 }
+	 * { box-sizing: border-box; }
+	 body { margin:0; padding:2rem 1.25rem 4rem; background:var(--bg); color:var(--ink);
+             font:16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+	 main { max-width: 1100px; margin: 0 auto; }
+	 h1 { margin:0 0 .25rem; font-size:1.6rem; }
+	 h2 { margin:2.5rem 0 .75rem; font-size:1.15rem; }
+	 p.lead { margin:0; color:var(--muted); }
+	 code { background:var(--card); border:1px solid var(--line); border-radius:4px; padding:.05em .35em; font-size:.88em; }
+
+	 /* playground */
+	 .playground { display:grid; grid-template-columns: minmax(240px,320px) 1fr; gap:1.5rem;
+             background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1.25rem; }
+	 @media (max-width: 720px) { .playground { grid-template-columns: 1fr; } }
+	 .controls { display:flex; flex-direction:column; gap:.7rem; }
+	 .controls label { display:flex; align-items:center; justify-content:space-between; gap:.75rem; font-size:.92rem; }
+	 .controls input[type=color] { width:3rem; height:2rem; border:1px solid var(--line); border-radius:6px; padding:2px; background:none; }
+	 .controls input[type=range] { width:9rem; }
+	 .controls select { padding:.25rem .4rem; }
+	 .stage { display:flex; align-items:center; justify-content:center; min-height:300px; }
+	 #play { width:min(100%, 520px); }
+	 pre { margin:1rem 0 0; padding:.75rem; background:var(--bg); border:1px solid var(--line); border-radius:8px;
+             overflow-x:auto; font-size:.8rem; grid-column:1 / -1; }
+
+	 /* gallery */
+	 .gallery { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap:1rem; }
+	 .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1rem; cursor:pointer;
+             transition: transform .12s; }
+	 .card:hover { transform: translateY(-2px); }
+	 .card scout-scarf { width:100%; }
+	 .card h3 { margin:.6rem 0 .1rem; font-size:.95rem; }
+	 .swatches { display:flex; gap:.3rem; align-items:center; font-size:.78rem; color:var(--muted); }
+	 .sw { width:.9rem; height:.9rem; border-radius:50%; border:1px solid var(--line); display:inline-block; }
+
+	 .row { display:flex; flex-wrap:wrap; gap:1.5rem; align-items:flex-end; }
+	 .row figure { margin:0; }
+	 .row figcaption { font-size:.82rem; color:var(--muted); margin-top:.3rem; }
+	</style>
+    </head>
+    <body>
+	<main>
+	    <h1>&lt;scout-scarf&gt;</h1>
+	    <p class="lead">Flat and rolled scarf pictograms as SVG. Click any card in the gallery to load it into the playground.</p>
+
+	    <h2>Playground</h2>
+	    <section class="playground">
+		<div class="controls">
+		    <label>Main colour <input type="color" id="main" value="#1e4fa3"></label>
+		    <label>Outer band <input type="color" id="outer" value="#f2c200"></label>
+		    <label>Inner band
+			<span><input type="checkbox" id="innerOn" checked> <input type="color" id="inner" value="#c8102e"></span>
+		    </label>
+		    <label>Band width <input type="range" id="bw" min="10" max="60" value="37"></label>
+		    <label>Outline <input type="color" id="stroke" value="#000000"></label>
+		    <label>Outline width <input type="range" id="sw" min="1" max="10" value="4"></label>
+		    <label>Logo <input type="checkbox" id="logoOn"></label>
+		    <label>View
+			<select id="view"><option>both</option><option>flat</option><option>rolled</option></select>
+		    </label>
+		</div>
+		<div class="stage"><scout-scarf id="play"></scout-scarf></div>
+		<pre id="code"></pre>
+	    </section>
+
+	    <h2>Colour combinations</h2>
+	    <div class="gallery" id="gallery"></div>
+
+	    <h2>Band options</h2>
+	    <div class="row">
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff" inner-band="#fdd835"></scout-scarf>
+		    <figcaption>Outer + inner band</figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff"></scout-scarf>
+		    <figcaption>Outer band only (fills border)</figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="none" inner-band="#fdd835"></scout-scarf>
+		    <figcaption>Inner band only, outer shows main colour</figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="none"></scout-scarf>
+		    <figcaption>Plain, no bands</figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff" inner-band="#fdd835"
+				 outer-band-width="10" inner-band-width="30"></scout-scarf>
+		    <figcaption>Custom widths (10 / 30)</figcaption>
+		</figure>
+	    </div>
+
+	    <h2>Views and logo</h2>
+	    <div class="row">
+		<figure>
+		    <scout-scarf id="v-flat" view="flat" style="width:260px" main-color="#6a1b9a" outer-band="#ffd54f" inner-band="#ffffff"></scout-scarf>
+		    <figcaption><code>view="flat"</code></figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf id="v-roll" view="rolled" style="width:260px" main-color="#6a1b9a" outer-band="#ffd54f" inner-band="#ffffff"></scout-scarf>
+		    <figcaption><code>view="rolled"</code></figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf id="v-logo" style="width:260px" main-color="#6a1b9a" outer-band="#ffd54f" inner-band="#ffffff" logo-scale="1.2"></scout-scarf>
+		    <figcaption><code>logo</code> + <code>logo-scale="1.2"</code></figcaption>
+		</figure>
+	    </div>
+	</main>
+
+	<script src="necker.js"></script>
+	<script>
+	 // Simple placeholder logo (data URI). Swap for your own SVG/PNG URL.
+	 var LOGO = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+	     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' +
+	     '<circle cx="50" cy="50" r="46" fill="#fff" stroke="#000" stroke-width="4"/>' +
+	     '<path d="M50 14 C58 32 66 40 66 54 C66 63 60 68 54 68 L54 82 L46 82 L46 68 C40 68 34 63 34 54 C34 40 42 32 50 14Z" fill="#222"/>' +
+	     '</svg>');
+
+	 var COMBOS = [
+	     { name:'Navy & gold',          main:'#14284b', outer:'#f2c200', inner:'#ffffff' },
+	     { name:'Forest & white',       main:'#1b5e20', outer:'#ffffff', inner:'#fdd835' },
+	     { name:'Scarlet & black',      main:'#c8102e', outer:'#111111', inner:'#ffffff' },
+	     { name:'Sky blue & navy',      main:'#4fa3e0', outer:'#14284b', inner:null },
+	     { name:'Purple & yellow',      main:'#6a1b9a', outer:'#ffd54f', inner:'#ffffff' },
+	     { name:'Orange & green',       main:'#ef6c00', outer:'#1b5e20', inner:'#ffe0b2' },
+	     { name:'Grey & red',           main:'#6d7378', outer:'#c8102e', inner:'#ffffff' },
+	     { name:'Teal & coral',         main:'#00796b', outer:'#ff7043', inner:'#fff3e0' },
+	     { name:'Maroon & cream',       main:'#7b1e2b', outer:'#f5e6c8', inner:'#d4a017' },
+	     { name:'Black & lime',         main:'#1a1a1a', outer:'#9ccc00', inner:null },
+	     { name:'Royal blue & red',     main:'#1e4fa3', outer:'#c8102e', inner:'#ffffff' },
+	     { name:'Khaki & brown',        main:'#a89f6b', outer:'#4e342e', inner:'#e8dfa8' }
+	 ];
+
+	 // ----- gallery -----
+	 var gallery = document.getElementById('gallery');
+	 COMBOS.forEach(function (c) {
+	     var card = document.createElement('div');
+	     card.className = 'card';
+	     var el = document.createElement('scout-scarf');
+	     el.setAttribute('main-color', c.main);
+	     el.setAttribute('outer-band', c.outer);
+	     if (c.inner) el.setAttribute('inner-band', c.inner);
+	     card.appendChild(el);
+	     var h = document.createElement('h3'); h.textContent = c.name; card.appendChild(h);
+	     var sw = document.createElement('div'); sw.className = 'swatches';
+	     [c.main, c.outer, c.inner].filter(Boolean).forEach(function (col) {
+		 var s = document.createElement('span'); s.className = 'sw'; s.style.background = col; sw.appendChild(s);
+	     });
+	     card.appendChild(sw);
+	     card.addEventListener('click', function () { load(c); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+	     gallery.appendChild(card);
+	 });
+
+	 // ----- playground -----
+	 var $ = function (id) { return document.getElementById(id); };
+	 var play = $('play');
+
+	 function update() {
+	     var bw = +$('bw').value, outerW = Math.round(bw * 0.65), innerW = bw - outerW;
+	     play.setAttribute('main-color', $('main').value);
+	     play.setAttribute('outer-band', $('outer').value);
+	     if ($('innerOn').checked) play.setAttribute('inner-band', $('inner').value);
+	     else play.removeAttribute('inner-band');
+	     play.setAttribute('outer-band-width', outerW);
+	     play.setAttribute('inner-band-width', innerW);
+	     play.setAttribute('stroke', $('stroke').value);
+	     play.setAttribute('stroke-width', $('sw').value);
+	     play.setAttribute('view', $('view').value);
+	     if ($('logoOn').checked) play.setAttribute('logo', LOGO); else play.removeAttribute('logo');
+
+	     $('code').textContent =
+		 '<scout-scarf\n' +
+		 '  main-color="' + $('main').value + '"\n' +
+		 '  outer-band="' + $('outer').value + '"\n' +
+	 ($('innerOn').checked ? '  inner-band="' + $('inner').value + '"\n' : '') +
+		 '  outer-band-width="' + outerW + '" inner-band-width="' + innerW + '"\n' +
+		 '  stroke="' + $('stroke').value + '" stroke-width="' + $('sw').value + '"\n' +
+		 '  view="' + $('view').value + '"' + ($('logoOn').checked ? '\n  logo="logo.svg"' : '') + '>\n' +
+		 '</scout-scarf>';
+	 }
+
+	 function load(c) {
+	     $('main').value = c.main;
+	     $('outer').value = c.outer;
+	     $('innerOn').checked = !!c.inner;
+	     if (c.inner) $('inner').value = c.inner;
+	     update();
+	 }
+
+	 document.querySelectorAll('.controls input, .controls select').forEach(function (i) {
+	     i.addEventListener('input', update);
+	 });
+	 update();
+
+	 // logo example
+	 document.getElementById('v-logo').setAttribute('logo', LOGO);
+	</script>
+    </body>
+</html>
