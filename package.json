@@ -1,0 +1,44 @@
+{
+  "name": "necker",
+  "version": "0.1.0",
+  "description": "A web-component for rendering SVG scout scarves / neckerchiefs",
+  "keywords": [
+    "scout",
+    "scarf",
+    "neckerchief",
+    "necker",
+    "svg",
+    "web-component",
+    "custom-element",
+    "pictogram"
+  ],
+  "homepage": "https://github.com/rmp/necker.js#readme",
+  "bugs": {
+    "url": "https://github.com/rmp/necker.js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmp/necker.js.git"
+  },
+  "license": "MIT",
+  "author": "Roger Pettett <rmp@psyphi.net>",
+  "type": "commonjs",
+  "main": "necker.js",
+  "exports": {
+    ".": "./necker.js",
+    "./package.json": "./package.json"
+  },
+  "unpkg": "necker.js",
+  "jsdelivr": "necker.js",
+  "files": [
+    "necker.js"
+  ],
+  "sideEffects": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "prepublishOnly": "npm test"
+  }
+}

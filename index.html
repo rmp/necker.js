@@ -60,7 +60,12 @@
 		    <label>Inner band
 			<span><input type="checkbox" id="innerOn" checked> <input type="color" id="inner" value="#c8102e"></span>
 		    </label>
-		    <label>Band width <input type="range" id="bw" min="10" max="60" value="37"></label>
+		    <label>Outer band width
+			<select id="outerW"><option>narrow</option><option>wide</option></select>
+		    </label>
+		    <label>Inner band width
+			<select id="innerW"><option>narrow</option><option>wide</option></select>
+		    </label>
 		    <label>Outline <input type="color" id="stroke" value="#000000"></label>
 		    <label>Outline width <input type="range" id="sw" min="1" max="10" value="4"></label>
 		    <label>Logo <input type="checkbox" id="logoOn"></label>
@@ -97,6 +102,21 @@
 		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff" inner-band="#fdd835"
 				 outer-band-width="10" inner-band-width="30"></scout-scarf>
 		    <figcaption>Custom widths (10 / 30)</figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff" inner-band="#fdd835"
+				 outer-band-width="wide" inner-band-width="wide"></scout-scarf>
+		    <figcaption><code>wide</code> / <code>wide</code></figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff" inner-band="#fdd835"
+				 outer-band-width="wide" inner-band-width="narrow"></scout-scarf>
+		    <figcaption><code>wide</code> outer / <code>narrow</code> inner</figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff" inner-band="#fdd835"
+				 outer-band-width="narrow" inner-band-width="wide"></scout-scarf>
+		    <figcaption><code>narrow</code> outer / <code>wide</code> inner</figcaption>
 		</figure>
 	    </div>
 
@@ -166,7 +186,7 @@
 	 var play = $('play');
 
 	 function update() {
-	     var bw = +$('bw').value, outerW = Math.round(bw * 0.65), innerW = bw - outerW;
+	     var outerW = $('outerW').value, innerW = $('innerW').value;
 	     play.setAttribute('main-color', $('main').value);
 	     play.setAttribute('outer-band', $('outer').value);
 	     if ($('innerOn').checked) play.setAttribute('inner-band', $('inner').value);

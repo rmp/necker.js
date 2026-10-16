@@ -1,9 +1,9 @@
 /*!
- * scout-scarf.js — standalone scout scarf pictogram generator + <scout-scarf> web component
+ * necker.js — standalone scout scarf pictogram generator + <scout-scarf> web component
  * No dependencies. Renders SVG showing a flat (unrolled) scarf and a rolled scarf.
  *
  * Usage (HTML):
- *   <script src="scout-scarf.js"></script>
+ *   <script src="necker.js"></script>
  *   <scout-scarf main-color="#1e4fa3" outer-band="#f2c200" inner-band="#c8102e"
  *                logo="logo.svg" style="width:400px"></scout-scarf>
  *
@@ -16,8 +16,8 @@
  *   view              "both" | "flat" | "rolled"                (default both)
  *   stroke            Outline colour                            (default #000)
  *   stroke-width      Outline width                             (default 4)
- *   outer-band-width  Outer band width in drawing units         (default 24)
- *   inner-band-width  Inner band width in drawing units         (default 13)
+ *   outer-band-width  Outer band width: "narrow" | "wide" | drawing units  (default narrow = 24, wide = 48)
+ *   inner-band-width  Inner band width: "narrow" | "wide" | drawing units  (default narrow = 13, wide = 26)
  *   label             Accessible label                          (default "Scout scarf")
  *
  * Programmatic:
@@ -40,6 +40,10 @@
   var TRI_M = 0.99;                           // slope of its edges
   var ROLL_BAND_SCALE = 1.2;                  // bands look slightly wider on the roll
   var TRI_BAND_SCALE = 1.08;
+  var BAND_WIDTHS = {                         // named band widths (drawing units)
+    outer: { narrow: 24, wide: 48 },
+    inner: { narrow: 13, wide: 26 }
+  };
 
   var DEFAULTS = {
     mainColor: '#2a5db0',
@@ -50,8 +54,8 @@
     view: 'both',
     stroke: '#000000',
     strokeWidth: 4,
-    outerBandWidth: 24,
-    innerBandWidth: 13,
+    outerBandWidth: 'narrow',
+    innerBandWidth: 'narrow',
     label: 'Scout scarf'
   };
 
@@ -67,6 +71,10 @@
   }
   function r(n) { return Math.round(n * 10) / 10; }
   function num(v, d) { var n = parseFloat(v); return isFinite(n) ? n : d; }
+  function bandWidth(v, named) {
+    var key = String(v).trim().toLowerCase();
+    return Math.max(0, named.hasOwnProperty(key) ? named[key] : num(v, named.narrow));
+  }
   function isNone(c) { return !c || String(c).toLowerCase() === 'none'; }
   function mirror(pts) { return pts.map(function (p) { return [2 * CX - p[0], p[1]]; }); }
   function polygon(pts, fill, o) {
@@ -95,8 +103,8 @@
     var o = Object.assign({}, DEFAULTS, options || {});
     var view = VIEWBOXES[o.view] ? o.view : 'both';
 
-    var oW = Math.max(0, num(o.outerBandWidth, 24));
-    var iW = Math.max(0, num(o.innerBandWidth, 13));
+    var oW = bandWidth(o.outerBandWidth, BAND_WIDTHS.outer);
+    var iW = bandWidth(o.innerBandWidth, BAND_WIDTHS.inner);
     if (isNone(o.innerBand)) { oW += iW; iW = 0; }
     var layers = [];
     if (oW > 0) layers.push({ b1: 0, b2: oW, fill: isNone(o.outerBand) ? 'none' : o.outerBand });
