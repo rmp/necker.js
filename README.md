@@ -65,7 +65,7 @@ const svg = ScoutScarf.toSVG({
 
 ## Demo
 
-Open `index.html` from the [repository](https://github.com/rmp/necker.js) for a playground and colour gallery.
+Open `[index.html](https://rmp.github.io/necker.js/)` from the [repository](https://github.com/rmp/necker.js) for a playground and colour gallery.
 
 ## Development
 
