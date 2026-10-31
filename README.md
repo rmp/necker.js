@@ -73,6 +73,11 @@ Open [index.html](https://rmp.github.io/necker.js/) from the [repository](https:
 npm test
 ```
 
+## To-do
+
+ [ ] support for half-and-half colour split down the centre line
+ [ ] support for complex pattern (e.g. tartan) by image embedding
+
 ## License
 
 MIT © Roger Pettett
