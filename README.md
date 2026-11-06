@@ -76,8 +76,8 @@ npm test
 
 ## To-do
 
- [x] support for half-and-half colour split down the centre line
- [ ] support for complex pattern (e.g. tartan) by image embedding
+- [x] support for half-and-half colour split down the centre line
+- [ ] support for complex pattern (e.g. tartan) by image embedding
 
 ## License
 
