@@ -56,6 +56,9 @@
 	    <section class="playground">
 		<div class="controls">
 		    <label>Main colour <input type="color" id="main" value="#1e4fa3"></label>
+		    <label>Right half
+			<span><input type="checkbox" id="splitOn"> <input type="color" id="split" value="#c8102e"></span>
+		    </label>
 		    <label>Outer band <input type="color" id="outer" value="#f2c200"></label>
 		    <label>Inner band
 			<span><input type="checkbox" id="innerOn" checked> <input type="color" id="inner" value="#c8102e"></span>
@@ -158,7 +161,8 @@
 	     { name:'Maroon & cream',       main:'#7b1e2b', outer:'#f5e6c8', inner:'#d4a017' },
 	     { name:'Black & lime',         main:'#1a1a1a', outer:'#9ccc00', inner:null },
 	     { name:'Royal blue & red',     main:'#1e4fa3', outer:'#c8102e', inner:'#ffffff' },
-	     { name:'Khaki & brown',        main:'#a89f6b', outer:'#4e342e', inner:'#e8dfa8' }
+	     { name:'Khaki & brown',        main:'#a89f6b', outer:'#4e342e', inner:'#e8dfa8' },
+	     { name:'Half navy / half red', main:'#14284b', split:'#c8102e', outer:'#ffffff', inner:null }
 	 ];
 
 	 // ----- gallery -----
@@ -169,11 +173,12 @@
 	     var el = document.createElement('scout-scarf');
 	     el.setAttribute('main-color', c.main);
 	     el.setAttribute('outer-band', c.outer);
+	     if (c.split) el.setAttribute('split-color', c.split);
 	     if (c.inner) el.setAttribute('inner-band', c.inner);
 	     card.appendChild(el);
 	     var h = document.createElement('h3'); h.textContent = c.name; card.appendChild(h);
 	     var sw = document.createElement('div'); sw.className = 'swatches';
-	     [c.main, c.outer, c.inner].filter(Boolean).forEach(function (col) {
+	     [c.main, c.split, c.outer, c.inner].filter(Boolean).forEach(function (col) {
 		 var s = document.createElement('span'); s.className = 'sw'; s.style.background = col; sw.appendChild(s);
 	     });
 	     card.appendChild(sw);
@@ -188,6 +193,8 @@
 	 function update() {
 	     var outerW = $('outerW').value, innerW = $('innerW').value;
 	     play.setAttribute('main-color', $('main').value);
+	     if ($('splitOn').checked) play.setAttribute('split-color', $('split').value);
+	     else play.removeAttribute('split-color');
 	     play.setAttribute('outer-band', $('outer').value);
 	     if ($('innerOn').checked) play.setAttribute('inner-band', $('inner').value);
 	     else play.removeAttribute('inner-band');
@@ -201,6 +208,7 @@
 	     $('code').textContent =
 		 '<scout-scarf\n' +
 		 '  main-color="' + $('main').value + '"\n' +
+	 ($('splitOn').checked ? '  split-color="' + $('split').value + '"\n' : '') +
 		 '  outer-band="' + $('outer').value + '"\n' +
 	 ($('innerOn').checked ? '  inner-band="' + $('inner').value + '"\n' : '') +
 		 '  outer-band-width="' + outerW + '" inner-band-width="' + innerW + '"\n' +
@@ -211,6 +219,8 @@
 
 	 function load(c) {
 	     $('main').value = c.main;
+	     $('splitOn').checked = !!c.split;
+	     if (c.split) $('split').value = c.split;
 	     $('outer').value = c.outer;
 	     $('innerOn').checked = !!c.inner;
 	     if (c.inner) $('inner').value = c.inner;

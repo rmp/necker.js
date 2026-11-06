@@ -11,6 +11,7 @@
  *   main-color        Fill colour of the scarf body             (default #2a5db0)
  *   outer-band        Colour of the outer edge band             (default #f2c200; "none" = show main colour)
  *   inner-band        Colour of the inner band (optional)       (default none; outer band then fills the whole border)
+ *   split-color       Body colour of the right half (optional)  (default none = whole body in main colour)
  *   logo              Optional URL / data: URI of a centre logo (SVG, PNG, ...)
  *   logo-scale        Logo size multiplier                      (default 1)
  *   view              "both" | "flat" | "rolled"                (default both)
@@ -49,6 +50,7 @@
     mainColor: '#2a5db0',
     outerBand: '#f2c200',
     innerBand: 'none',
+    splitColor: 'none',
     logo: '',
     logoScale: 1,
     view: 'both',
@@ -110,12 +112,14 @@
     if (oW > 0) layers.push({ b1: 0, b2: oW, fill: isNone(o.outerBand) ? 'none' : o.outerBand });
     if (iW > 0) layers.push({ b1: oW, b2: oW + iW, fill: o.innerBand });
 
+    var split = !isNone(o.splitColor);
     var sw = num(o.strokeWidth, 4);
     var out = [];
 
     // ===== flat scarf =====
     var flat = [];
     flat.push(polygon([[FLAT.x0, FLAT.y0], [2 * CX - FLAT.x0, FLAT.y0], [CX, FLAT.apexY]], o.mainColor));
+    if (split) flat.push(polygon([[CX, FLAT.y0], [2 * CX - FLAT.x0, FLAT.y0], [CX, FLAT.apexY]], o.splitColor));
     layers.forEach(function (L) {
       var left = [
         [FLAT.x0 + L.b1, FLAT.y0], [FLAT.x0 + L.b2, FLAT.y0],
@@ -130,6 +134,7 @@
     var xl = ROLL_END, xr = 2 * CX - ROLL_END;
     var ribbon = sample(rollTop, xl, xr).concat(sample(rollBottom, xr - ROLL_SHIFT, xl + ROLL_SHIFT));
     roll.push(polygon(ribbon, o.mainColor));
+    if (split) roll.push(polygon(sample(rollTop, CX, xr).concat(sample(rollBottom, xr - ROLL_SHIFT, CX)), o.splitColor));
 
     [ROLL_END, 285].forEach(function (x0) {
       layers.forEach(function (L) {
@@ -144,6 +149,7 @@
     var tyl = rollTop(txl), tApex = tyl + TRI_M * TRI_HALF;
     var tri = sample(rollTop, txl, txr).concat([[CX, tApex]]);
     roll.push(polygon(tri, o.mainColor));
+    if (split) roll.push(polygon(sample(rollTop, CX, txr).concat([[CX, tApex]]), o.splitColor));
     layers.forEach(function (L) {
       var b1 = L.b1 * TRI_BAND_SCALE, b2 = L.b2 * TRI_BAND_SCALE;
       var left = sample(rollTop, txl + b1, txl + b2).concat([
@@ -169,6 +175,7 @@
   if (typeof HTMLElement !== 'undefined' && typeof customElements !== 'undefined') {
     var ATTRS = {
       'main-color': 'mainColor', 'outer-band': 'outerBand', 'inner-band': 'innerBand',
+      'split-color': 'splitColor',
       'logo': 'logo', 'logo-scale': 'logoScale', 'view': 'view', 'stroke': 'stroke',
       'stroke-width': 'strokeWidth', 'outer-band-width': 'outerBandWidth',
       'inner-band-width': 'innerBandWidth', 'label': 'label'

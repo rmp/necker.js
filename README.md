@@ -54,6 +54,7 @@ const svg = ScoutScarf.toSVG({
 | `main-color`       | `mainColor`      | `#2a5db0`       | Fill colour of the scarf body |
 | `outer-band`       | `outerBand`      | `#f2c200`       | Outer edge band colour; `none` shows the main colour |
 | `inner-band`       | `innerBand`      | `none`          | Inner band colour; when `none` the outer band fills the whole border |
+| `split-color`      | `splitColor`     | `none`          | Body colour of the right half, split down the centre line; `none` = single colour |
 | `outer-band-width` | `outerBandWidth` | `narrow`        | `narrow` (24), `wide` (48) or a number in drawing units |
 | `inner-band-width` | `innerBandWidth` | `narrow`        | `narrow` (13), `wide` (26) or a number in drawing units |
 | `logo`             | `logo`           | —               | URL or `data:` URI of a centre logo |
@@ -75,7 +76,7 @@ npm test
 
 ## To-do
 
- [ ] support for half-and-half colour split down the centre line
+ [x] support for half-and-half colour split down the centre line
  [ ] support for complex pattern (e.g. tartan) by image embedding
 
 ## License

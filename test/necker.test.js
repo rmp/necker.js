@@ -133,3 +133,19 @@ test('output is deterministic and does not mutate defaults', () => {
   assert.equal(ScoutScarf.toSVG({ outerBandWidth: 'wide' }), ScoutScarf.toSVG({ outerBandWidth: 'wide' }));
   assert.deepEqual(ScoutScarf.defaults, before);
 });
+
+// ---------- half-and-half ----------
+test('splitColor fills the right half of the body on every view, under the bands', () => {
+  assert.doesNotMatch(ScoutScarf.toSVG(), /fill="#0f0"/);
+  const svg = ScoutScarf.toSVG({ splitColor: '#0f0' });
+  for (const cls of ['scarf-flat', 'scarf-rolled']) {
+    const polys = polygons(group(svg, cls));
+    const halves = polys.filter(p => p.fill === '#0f0');
+    assert.ok(halves.length > 0, cls);
+    for (const h of halves) {
+      assert.ok(h.points.every(([x]) => x >= 913), 'right of centre line');
+      assert.ok(polys.slice(polys.indexOf(h)).some(p => p.fill === '#f2c200'), 'bands drawn on top');
+    }
+  }
+  assert.equal(ScoutScarf.toSVG({ splitColor: 'none' }), ScoutScarf.toSVG());
+});
