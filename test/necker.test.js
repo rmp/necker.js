@@ -91,10 +91,33 @@ test('bands are mirrored symmetrically about the centre line', () => {
   }
 });
 
+test('middle band sits between outer and inner, with its own width', () => {
+  assert.deepEqual(flatBands({ outerBand: '#ff0', middleBand: '#fff', innerBand: '#f00' }), [
+    { from: 0, to: 24, fill: '#ff0' },
+    { from: 24, to: 37, fill: '#fff' },
+    { from: 37, to: 50, fill: '#f00' }
+  ]);
+  assert.deepEqual(flatBands({ middleBand: '#fff', innerBand: '#f00', middleBandWidth: 'wide' }).map(b => [b.from, b.to]),
+    [[0, 24], [24, 50], [50, 63]]);
+});
+
+test('an unset middle band takes no space', () => {
+  const opts = { innerBand: '#f00', middleBandWidth: 'wide' };
+  assert.equal(ScoutScarf.toSVG({ ...opts, middleBand: 'none' }), ScoutScarf.toSVG({ innerBand: '#f00' }));
+  assert.equal(ScoutScarf.toSVG(opts), ScoutScarf.toSVG({ innerBand: '#f00' }));
+});
+
+test('without an inner band the middle band takes its width', () => {
+  assert.deepEqual(flatBands({ outerBand: '#ff0', middleBand: '#fff' }), [
+    { from: 0, to: 24, fill: '#ff0' },
+    { from: 24, to: 50, fill: '#fff' }
+  ]);
+});
+
 test('every band appears on the flat scarf, both roll ends and the rolled triangle', () => {
-  const svg = ScoutScarf.toSVG({ outerBand: '#ff0', innerBand: '#f00' });
+  const svg = ScoutScarf.toSVG({ outerBand: '#ff0', middleBand: '#fff', innerBand: '#f00' });
   const count = (markup, fill) => polygons(markup).filter(p => p.fill === fill).length;
-  for (const fill of ['#ff0', '#f00']) {
+  for (const fill of ['#ff0', '#fff', '#f00']) {
     assert.equal(count(group(svg, 'scarf-flat'), fill), 2);
     assert.equal(count(group(svg, 'scarf-rolled'), fill), 6);
   }

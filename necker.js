@@ -4,13 +4,14 @@
  *
  * Usage (HTML):
  *   <script src="necker.js"></script>
- *   <scout-scarf main-color="#1e4fa3" outer-band="#f2c200" inner-band="#c8102e"
- *                logo="logo.svg" style="width:400px"></scout-scarf>
+ *   <scout-scarf main-color="#1e4fa3" outer-band="#f2c200" middle-band="#ffffff"
+ *                inner-band="#c8102e" logo="logo.svg" style="width:400px"></scout-scarf>
  *
  * Attributes:
  *   main-color        Fill colour of the scarf body             (default #2a5db0)
  *   outer-band        Colour of the outer edge band             (default #f2c200; "none" = show main colour)
- *   inner-band        Colour of the inner band (optional)       (default none; outer band then fills the whole border)
+ *   middle-band       Colour of the middle band (optional)      (default none = takes no space)
+ *   inner-band        Colour of the inner band (optional)       (default none; the band outside it then takes its width)
  *   split-color       Body colour of the right half (optional)  (default none = whole body in main colour)
  *   logo              Optional URL / data: URI of a centre logo (SVG, PNG, ...)
  *   logo-scale        Logo size multiplier                      (default 1)
@@ -18,11 +19,12 @@
  *   stroke            Outline colour                            (default #000)
  *   stroke-width      Outline width                             (default 4)
  *   outer-band-width  Outer band width: "narrow" | "wide" | drawing units  (default narrow = 24, wide = 48)
+ *   middle-band-width Middle band width: "narrow" | "wide" | drawing units (default narrow = 13, wide = 26)
  *   inner-band-width  Inner band width: "narrow" | "wide" | drawing units  (default narrow = 13, wide = 26)
  *   label             Accessible label                          (default "Scout scarf")
  *
  * Programmatic:
- *   ScoutScarf.toSVG({ mainColor, outerBand, innerBand, logo, view, ... })  -> SVG string
+ *   ScoutScarf.toSVG({ mainColor, outerBand, middleBand, innerBand, logo, view, ... })  -> SVG string
  *   document.querySelector('scout-scarf').toSVG()                           -> SVG string for the element
  */
 (function (root) {
@@ -43,12 +45,14 @@
   var TRI_BAND_SCALE = 1.08;
   var BAND_WIDTHS = {                         // named band widths (drawing units)
     outer: { narrow: 24, wide: 48 },
+    middle: { narrow: 13, wide: 26 },
     inner: { narrow: 13, wide: 26 }
   };
 
   var DEFAULTS = {
     mainColor: '#2a5db0',
     outerBand: '#f2c200',
+    middleBand: 'none',
     innerBand: 'none',
     splitColor: 'none',
     logo: '',
@@ -57,6 +61,7 @@
     stroke: '#000000',
     strokeWidth: 4,
     outerBandWidth: 'narrow',
+    middleBandWidth: 'narrow',
     innerBandWidth: 'narrow',
     label: 'Scout scarf'
   };
@@ -106,11 +111,13 @@
     var view = VIEWBOXES[o.view] ? o.view : 'both';
 
     var oW = bandWidth(o.outerBandWidth, BAND_WIDTHS.outer);
+    var mW = isNone(o.middleBand) ? 0 : bandWidth(o.middleBandWidth, BAND_WIDTHS.middle);
     var iW = bandWidth(o.innerBandWidth, BAND_WIDTHS.inner);
-    if (isNone(o.innerBand)) { oW += iW; iW = 0; }
-    var layers = [];
-    if (oW > 0) layers.push({ b1: 0, b2: oW, fill: isNone(o.outerBand) ? 'none' : o.outerBand });
-    if (iW > 0) layers.push({ b1: oW, b2: oW + iW, fill: o.innerBand });
+    if (isNone(o.innerBand)) { if (mW > 0) mW += iW; else oW += iW; iW = 0; }
+    var layers = [], edge = 0;
+    [[oW, isNone(o.outerBand) ? 'none' : o.outerBand], [mW, o.middleBand], [iW, o.innerBand]].forEach(function (b) {
+      if (b[0] > 0) { layers.push({ b1: edge, b2: edge + b[0], fill: b[1] }); edge += b[0]; }
+    });
 
     var split = !isNone(o.splitColor);
     var sw = num(o.strokeWidth, 4);
@@ -174,11 +181,11 @@
   // ---------- web component ----------
   if (typeof HTMLElement !== 'undefined' && typeof customElements !== 'undefined') {
     var ATTRS = {
-      'main-color': 'mainColor', 'outer-band': 'outerBand', 'inner-band': 'innerBand',
+      'main-color': 'mainColor', 'outer-band': 'outerBand', 'middle-band': 'middleBand', 'inner-band': 'innerBand',
       'split-color': 'splitColor',
       'logo': 'logo', 'logo-scale': 'logoScale', 'view': 'view', 'stroke': 'stroke',
       'stroke-width': 'strokeWidth', 'outer-band-width': 'outerBandWidth',
-      'inner-band-width': 'innerBandWidth', 'label': 'label'
+      'middle-band-width': 'middleBandWidth', 'inner-band-width': 'innerBandWidth', 'label': 'label'
     };
 
     var ScoutScarfElement = class extends HTMLElement {

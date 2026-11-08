@@ -21,7 +21,7 @@ Or straight from a CDN:
 ```html
 <script src="node_modules/necker/necker.js"></script>
 
-<scout-scarf main-color="#1e4fa3" outer-band="#f2c200" inner-band="#c8102e"
+<scout-scarf main-color="#1e4fa3" outer-band="#f2c200" middle-band="#ffffff" inner-band="#c8102e"
              outer-band-width="wide" logo="logo.svg" style="width:400px"></scout-scarf>
 ```
 
@@ -39,6 +39,7 @@ const ScoutScarf = require('necker');
 const svg = ScoutScarf.toSVG({
   mainColor: '#1e4fa3',
   outerBand: '#f2c200',
+  middleBand: '#ffffff',
   innerBand: '#c8102e',
   outerBandWidth: 'wide',
   view: 'flat'
@@ -53,9 +54,11 @@ const svg = ScoutScarf.toSVG({
 |--------------------|------------------|-----------------|-------------|
 | `main-color`       | `mainColor`      | `#2a5db0`       | Fill colour of the scarf body |
 | `outer-band`       | `outerBand`      | `#f2c200`       | Outer edge band colour; `none` shows the main colour |
-| `inner-band`       | `innerBand`      | `none`          | Inner band colour; when `none` the outer band fills the whole border |
+| `middle-band`      | `middleBand`     | `none`          | Middle band colour, between outer and inner; when `none` it takes no space |
+| `inner-band`       | `innerBand`      | `none`          | Inner band colour; when `none` the band outside it (middle, else outer) takes its width |
 | `split-color`      | `splitColor`     | `none`          | Body colour of the right half, split down the centre line; `none` = single colour |
 | `outer-band-width` | `outerBandWidth` | `narrow`        | `narrow` (24), `wide` (48) or a number in drawing units |
+| `middle-band-width` | `middleBandWidth` | `narrow`      | `narrow` (13), `wide` (26) or a number in drawing units |
 | `inner-band-width` | `innerBandWidth` | `narrow`        | `narrow` (13), `wide` (26) or a number in drawing units |
 | `logo`             | `logo`           | —               | URL or `data:` URI of a centre logo |
 | `logo-scale`       | `logoScale`      | `1`             | Logo size multiplier |

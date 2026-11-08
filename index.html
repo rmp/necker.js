@@ -60,11 +60,17 @@
 			<span><input type="checkbox" id="splitOn"> <input type="color" id="split" value="#c8102e"></span>
 		    </label>
 		    <label>Outer band <input type="color" id="outer" value="#f2c200"></label>
+		    <label>Middle band
+			<span><input type="checkbox" id="middleOn"> <input type="color" id="middle" value="#ffffff"></span>
+		    </label>
 		    <label>Inner band
 			<span><input type="checkbox" id="innerOn" checked> <input type="color" id="inner" value="#c8102e"></span>
 		    </label>
 		    <label>Outer band width
 			<select id="outerW"><option>narrow</option><option>wide</option></select>
+		    </label>
+		    <label>Middle band width
+			<select id="middleW"><option>narrow</option><option>wide</option></select>
 		    </label>
 		    <label>Inner band width
 			<select id="innerW"><option>narrow</option><option>wide</option></select>
@@ -88,6 +94,10 @@
 		<figure>
 		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff" inner-band="#fdd835"></scout-scarf>
 		    <figcaption>Outer + inner band</figcaption>
+		</figure>
+		<figure>
+		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff" middle-band="#c8102e" inner-band="#fdd835"></scout-scarf>
+		    <figcaption>Outer + middle + inner band</figcaption>
 		</figure>
 		<figure>
 		    <scout-scarf style="width:200px" main-color="#1b5e20" outer-band="#ffffff"></scout-scarf>
@@ -162,6 +172,8 @@
 	     { name:'Black & lime',         main:'#1a1a1a', outer:'#9ccc00', inner:null },
 	     { name:'Royal blue & red',     main:'#1e4fa3', outer:'#c8102e', inner:'#ffffff' },
 	     { name:'Khaki & brown',        main:'#a89f6b', outer:'#4e342e', inner:'#e8dfa8' },
+	     { name:'Navy, white & red',    main:'#14284b', outer:'#c8102e', middle:'#ffffff', inner:'#c8102e' },
+	     { name:'Green, gold & black',  main:'#1b5e20', outer:'#111111', middle:'#f2c200', inner:'#111111' },
 	     { name:'Half navy / half red', main:'#14284b', split:'#c8102e', outer:'#ffffff', inner:null }
 	 ];
 
@@ -174,11 +186,12 @@
 	     el.setAttribute('main-color', c.main);
 	     el.setAttribute('outer-band', c.outer);
 	     if (c.split) el.setAttribute('split-color', c.split);
+	     if (c.middle) el.setAttribute('middle-band', c.middle);
 	     if (c.inner) el.setAttribute('inner-band', c.inner);
 	     card.appendChild(el);
 	     var h = document.createElement('h3'); h.textContent = c.name; card.appendChild(h);
 	     var sw = document.createElement('div'); sw.className = 'swatches';
-	     [c.main, c.split, c.outer, c.inner].filter(Boolean).forEach(function (col) {
+	     [c.main, c.split, c.outer, c.middle, c.inner].filter(Boolean).forEach(function (col) {
 		 var s = document.createElement('span'); s.className = 'sw'; s.style.background = col; sw.appendChild(s);
 	     });
 	     card.appendChild(sw);
@@ -191,14 +204,17 @@
 	 var play = $('play');
 
 	 function update() {
-	     var outerW = $('outerW').value, innerW = $('innerW').value;
+	     var outerW = $('outerW').value, middleW = $('middleW').value, innerW = $('innerW').value;
 	     play.setAttribute('main-color', $('main').value);
 	     if ($('splitOn').checked) play.setAttribute('split-color', $('split').value);
 	     else play.removeAttribute('split-color');
 	     play.setAttribute('outer-band', $('outer').value);
+	     if ($('middleOn').checked) play.setAttribute('middle-band', $('middle').value);
+	     else play.removeAttribute('middle-band');
 	     if ($('innerOn').checked) play.setAttribute('inner-band', $('inner').value);
 	     else play.removeAttribute('inner-band');
 	     play.setAttribute('outer-band-width', outerW);
+	     play.setAttribute('middle-band-width', middleW);
 	     play.setAttribute('inner-band-width', innerW);
 	     play.setAttribute('stroke', $('stroke').value);
 	     play.setAttribute('stroke-width', $('sw').value);
@@ -210,8 +226,9 @@
 		 '  main-color="' + $('main').value + '"\n' +
 	 ($('splitOn').checked ? '  split-color="' + $('split').value + '"\n' : '') +
 		 '  outer-band="' + $('outer').value + '"\n' +
+	 ($('middleOn').checked ? '  middle-band="' + $('middle').value + '"\n' : '') +
 	 ($('innerOn').checked ? '  inner-band="' + $('inner').value + '"\n' : '') +
-		 '  outer-band-width="' + outerW + '" inner-band-width="' + innerW + '"\n' +
+		 '  outer-band-width="' + outerW + '"' + ($('middleOn').checked ? ' middle-band-width="' + middleW + '"' : '') + ' inner-band-width="' + innerW + '"\n' +
 		 '  stroke="' + $('stroke').value + '" stroke-width="' + $('sw').value + '"\n' +
 		 '  view="' + $('view').value + '"' + ($('logoOn').checked ? '\n  logo="logo.svg"' : '') + '>\n' +
 		 '</scout-scarf>';
@@ -222,6 +239,8 @@
 	     $('splitOn').checked = !!c.split;
 	     if (c.split) $('split').value = c.split;
 	     $('outer').value = c.outer;
+	     $('middleOn').checked = !!c.middle;
+	     if (c.middle) $('middle').value = c.middle;
 	     $('innerOn').checked = !!c.inner;
 	     if (c.inner) $('inner').value = c.inner;
 	     update();
